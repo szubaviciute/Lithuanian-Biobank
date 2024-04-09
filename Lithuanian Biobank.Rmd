@@ -1,0 +1,212 @@
+---
+title: "Lithuanian NVI Biobank Stored Samples"
+author: "Simona Zubavičiūtė"
+date: "2024-02-29"
+output: 
+  html_document:
+    df_print: paged
+---
+
+# Preparation for data analysis and data cleaning
+
+## Importing libraries
+
+```{r, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyverse)
+library(base)
+library(lubridate)
+library(ggplot2)
+library(webr)
+library(plotly)
+```
+
+## Importing data
+
+```{r, R.options=list(max.print=100)}
+data <- read.table(file = "C:\\Users\\Simona\\Desktop\\Personal_Portfolio\\Biobank_LT\\biobank.txt", header = TRUE, sep = ',')
+
+data
+```
+
+## Checking for the number of rows and columns in data set
+
+```{r}
+glimpse(data)
+```
+## Merging the prefix and suffix to form ID 
+
+```{r, R.options=list(max.print=100)}
+data$ID <- paste(data$emimprefix, data$megnrsuffix, sep = "")
+
+data
+```
+
+## Cheking if all samples have unique ID
+
+```{r, R.options=list(max.print=100)}
+unique(data$ID)
+```
+
+## Removing duplicates to get clean data set
+
+```{r, R.options=list(max.print=100)}
+df <- data %>% distinct()
+
+df
+```
+
+## Renaming columns from Lithuanian to English
+
+```{r, R.options=list(max.print=100)}
+df_renamed <-
+df %>% 
+  rename(age_group = amzgr,
+    sex = lytis,
+    diagnosis = dgn,
+    localization = lokalizacija,
+    stored_sample = megpavad,
+    container = indpavad,
+    amount = kiekis,
+    measurmement = vnt,
+    year = megmetai
+  )
+
+df_renamed
+```
+## Changing localization name from Lithuanian to English
+
+```{r, R.options=list(max.print=100)}
+
+df_renamed_rv <-
+df_renamed %>%
+  mutate(localization = recode(localization,
+                            "Gimdos kūnas" = "Uterus", 
+                            "Inkstai" = "Kidneys",
+                            "Kiaušidės" = "Ovaries", 
+                            "Krūtis" = "Breast", 
+                            "Melanoma" = "Melanoma", 
+                            "Plaučiai" = "Lungs", 
+                            "Prostatos biopsija" = "Prostate", 
+                            "Sėklidės" ="Testicles", 
+                            "Žarnynas" ="Intestine"))
+df_renamed_rv
+
+```
+
+## Removing not useful columns 
+
+```{r, R.options=list(max.print=100)}
+df_full <- subset(df_renamed_rv, select = -c(megmen, emimprefix, megnrsuffix))
+
+df_full
+```
+## Changing diagnosis values to Cancerous and Non-Cancerous
+
+```{r, R.options=list(max.print=100)}
+df_full$diagnosis <- sub(".\\d+","Cancerous", df_full$diagnosis)
+
+df_full
+```
+```{r, R.options=list(max.print=100)}
+df_full$diagnosis <- sub("^$","Non-cancerous", df_full$diagnosis)
+
+df_full
+```
+
+# Visualization
+
+## Visualizing what are the most common localizations of stored samples by age group
+
+```{r}
+breaks_y = c(0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000)
+
+plot1 <- ggplot(df_full, aes(x = age_group, fill = localization)) +
+  geom_bar() +
+  labs(x = "Age group", y = "Counts per Localization", title = "Stored Samples by Age Group at NVI Biobank", color = "Localization", fill = "Localization") +
+  scale_y_continuous(limits = c(0, 4000), breaks = breaks_y) +
+  theme_bw() +
+  theme(axis.text = element_text(size = 9),
+    axis.title.y = element_text(size = 12, face ="bold"),
+    axis.title.x = element_text(size = 12, face ="bold"),
+    legend.title=element_text(size=10, face ="bold"),
+    legend.text=element_text(size=10),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 12, face = "bold"))
+
+ggplotly(plot1)
+
+```
+
+
+## Visualizing how stored sample count changed during the years 2018-2022 by sex and localization
+
+```{r}
+breaks_y = c(0, 1000, 2000, 3000, 4000)
+
+df_full_mod <- df_full %>%
+  mutate(sex = recode(sex, "V" = "Male", "M" = "Female"))
+
+plot2 <- ggplot(df_full_mod, aes(x = year, fill = localization)) +
+  geom_bar() + 
+  facet_wrap(vars(sex)) +
+  labs(x = "Year of Collection", y = "Counts per Localization", title = "Stored Samples by Sex at NVI Biobank", color = "Localization", fill = "Localization") +
+  scale_y_continuous(limits = c(0, 4000, breaks = breaks_y)) +
+  scale_fill_discrete(labels=c("Gimdos kūnas" = "Uterus", 
+     "Inkstai" = "Kidneys",
+     "Kiaušidės" = "Ovaries", 
+     "Krūtis" = "Breast", 
+     "Melanoma" = "Melanoma", 
+     "Plaučiai" = "Lungs", 
+     "Prostatos biopsija" = "Prostate biopsy", 
+     "Sėklidės" ="Testicles", 
+     "Žarnynas" ="Intestine")) +
+  theme_bw() +
+  theme(axis.text = element_text(size = 9),
+    axis.title.y = element_text(size = 12, face ="bold"),
+    axis.title.x = element_text(size = 12, face ="bold"),
+    legend.title=element_text(size=10, face ="bold"),
+    legend.text=element_text(size=10),
+    plot.title = element_text(size = 12, face = "bold")) 
+```
+
+```{r, include = FALSE}
+plot2_flip <- plot2 + coord_flip()
+```
+
+```{r}
+ggplotly(plot2_flip) 
+```
+
+
+
+## Visualizing whether stored samples by localization and age group were cancerous or not
+
+```{r}
+breaks_y = c(0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000)
+
+plot3 <- ggplot(df_full, aes(x = age_group, fill = localization)) +
+  geom_bar()  +
+  facet_wrap(vars(diagnosis)) +
+  labs(x = "Age group", y = "Counts per Localization", title = "Stored Samples by Diagnosis and Age Group at NVI Biobank", color = "Localization", fill = "Localization") +
+  scale_y_continuous(limits = c(0, 4000), breaks = breaks_y) +
+  scale_fill_discrete(labels=c("Gimdos kūnas" = "Uterus", 
+     "Inkstai" = "Kidneys",
+     "Kiaušidės" = "Ovaries", 
+     "Krūtis" = "Breast", 
+     "Melanoma" = "Melanoma", 
+     "Plaučiai" = "Lungs", 
+     "Prostatos biopsija" = "Prostate biopsy", 
+     "Sėklidės" ="Testicles", 
+     "Žarnynas" ="Intestine")) +
+  theme_bw() +
+  theme(axis.text = element_text(size = 9),
+    axis.title.y = element_text(size = 12, face ="bold"),
+    axis.title.x = element_text(size = 12, face ="bold"),
+    legend.title=element_text(size=10, face ="bold"),
+    legend.text=element_text(size=10),
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    plot.title = element_text(size = 12, face = "bold"))
+
+ggplotly(plot3) 
+```
