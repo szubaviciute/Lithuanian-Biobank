@@ -37,3 +37,25 @@ df_full$diagnosis <- sub("^$","Non-cancerous", df_full$diagnosis)
 df_full
 ```
 
+### Results
+
+The analysis results are summarized as follows:
+1. The most common origin of stored samples in 15-54 and 65-85+ age brackets are kidneys, however prostate samples dominate in 55-64 age groups
+2. The stored sample count during the years increased from males, however such increase was not observed from female samples. Furthermore, prostate and kidney sample storage quickly increased from male patient's, but not necessarily from female patient's
+3. Most of the stored samples at Lithuania's NVI biobank came to be cancerous
+
+### Recommendations
+
+Based on the performed analysis, it seems that:
+
+1. Lithuanian's might likely suffer from kidney cancer, while specifically males tend to develop prostate cancer, thus prevention programs for kidney and prostate cancer should be implemented in the future
+2. Males might tend to neglect their well being, concluding their increase in cancer developmenent, thus health providers should implement cancer prevention action programs specifically for male patients
+3. Healthy lifestyle and cancer prevention programs should be encouraged more to prevent this heavy diagnosis
+
+### Limitations
+
+The Lithuania's NVI Biobank is the biggest cancerous sample database, however other hospitals might also have data on patient's cancer/non-cancer diagnosis. Thus having more datasets from other Lithuania's hospitals would be an advantage for future analysis to gather more insights on Lithuanian's well being
+
+### References
+
+- https://www.r-bloggers.com/2023/08/the-substring-function-in-r/
