@@ -11,3 +11,20 @@ The primary dataset used for this analysis is the "biobank.txt" file, containing
 ### Tools
 R studio - Data Cleaning, analysis and visualization
 
+### Data Cleaning/Preparation
+
+The initial data preparation phase included following tasks:
+
+- Data loading and inspection
+- Removing duplicates
+- Renaming columns from Lithuanian to English
+- Data cleaning and formatting
+
+### Exploratory Data Analysis
+
+EDA involved exploring the sample data to answer key questions, such as:
+
+1. what are the most common localizations of stored samples by age group
+2. how stored sample count changed during the years 2018-2022 by sex and localization
+3. whether stored samples by localization and age group were cancerous or not.
+
