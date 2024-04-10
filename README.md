@@ -24,7 +24,16 @@ The initial data preparation phase included following tasks:
 
 EDA involved exploring the sample data to answer key questions, such as:
 
-1. what are the most common localizations of stored samples by age group
-2. how stored sample count changed during the years 2018-2022 by sex and localization
-3. whether stored samples by localization and age group were cancerous or not.
+1. What are the most common localizations of stored samples by age group
+2. How stored sample count changed during the years 2018-2022 by sex and localization
+3. Whether stored samples by localization and age group were cancerous or not
+
+### Data Analysis snippet
+
+``` R
+df_full$diagnosis <- sub(".\\d+","Cancerous", df_full$diagnosis)
+df_full$diagnosis <- sub("^$","Non-cancerous", df_full$diagnosis)
+
+df_full
+```
 
