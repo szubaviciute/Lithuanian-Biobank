@@ -2,7 +2,7 @@
 
 ### Overview
 
-This data analysis project aims to provide insights into the samples of Lithuanian NVI biobank over the years 2018 to 2022. By analyzing various aspects of the stored samples I aimed to identify trends and gain a deeper understanding of the stored samples and how they might reflect Lithuanian patient's health parameters. 
+This data analysis project aims to provide insights into the samples of Lithuanian NVI biobank over the years 2018 to 2022. By analyzing various aspects of the stored samples I aimed to identify trends and gain a deeper understanding of the stored samples and how they might reflect Lithuanian patient's health parameters 
 
 <img width="781" alt="Plots" src="https://github.com/szubaviciute/Lithuanian-Biobank/assets/159541216/f2165978-0fae-4e2a-8cc7-e14ef3eb5f98">
 
@@ -33,6 +33,8 @@ EDA involved exploring the sample data to answer key questions, such as:
 
 ### Data Analysis snippet
 
+Changing diagnosis values to Cancerous and Non-Cancerous
+
 ``` R
 df_full$diagnosis <- sub(".\\d+","Cancerous", df_full$diagnosis)
 df_full$diagnosis <- sub("^$","Non-cancerous", df_full$diagnosis)
@@ -51,8 +53,8 @@ The analysis results are summarized as follows:
 
 Based on the performed analysis, it seems that:
 
-1. Lithuanian's might likely suffer from kidney cancer, while specifically males tend to develop prostate cancer, thus prevention programs for kidney and prostate cancer should be implemented in the future
-2. Males might tend to neglect their well being, concluding their increase in cancer developmenent, thus health providers should implement cancer prevention action programs specifically for male patients
+1. Lithuanian's might likely suffer from kidney cancer occurrences, while specifically males tend to develop prostate cancer, thus prevention programs for kidney and prostate cancer should be implemented in the future
+2. Males might tend to neglect their well being, concluding their increase in cancer developmenent during the years 2018-2020, thus health providers should implement cancer prevention action programs specifically for male patients
 3. Healthy lifestyle and cancer prevention programs should be encouraged more to prevent this heavy diagnosis
 
 ### Limitations
